@@ -1,7 +1,8 @@
-                       _________________________
 
-                            Java FastCGI Client
-                       _________________________
+#Java FastCGI Client
+
+#####A `Java` FastCGI Client for directly access PHP web resource through `FastCGI`
+
 
 AUTHOR & Email
 ================
@@ -10,7 +11,7 @@ wuyunfeng
     - wyfsky888@126.com
 
 
-How can I use it ?
+How use?(You should start your PHP-FPM)
 ========================
 
         FCGIClient client = new FCGIClient("127.0.0.1",
