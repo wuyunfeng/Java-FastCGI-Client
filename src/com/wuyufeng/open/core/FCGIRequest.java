@@ -70,7 +70,6 @@ public class FCGIRequest {
 
 
     public boolean writeTo(OutputStream os) {
-        System.out.println(Arrays.toString(out.toByteArray()));
         try {
             out.writeTo(os);
         } catch (IOException e) {

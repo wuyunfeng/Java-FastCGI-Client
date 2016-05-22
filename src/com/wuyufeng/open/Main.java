@@ -39,7 +39,6 @@ public class Main {
         params.put("SERVER_PROTOCOL", "HTTP/1.1");
         params.put("CONTENT_TYPE", "application/x-www-form-urlencoded");
         params.put("CONTENT_LENGTH", content.length() + "");
-        System.out.print("content.length " + content.length());
         client.request(params, content);
     }
 }

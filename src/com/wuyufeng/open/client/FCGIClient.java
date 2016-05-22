@@ -1,12 +1,12 @@
 package com.wuyufeng.open.client;
 
+import com.wuyufeng.open.core.FCGIConstant;
+import com.wuyufeng.open.core.FCGIEngine;
+import com.wuyufeng.open.core.FCGIRequest;
 import com.wuyufeng.open.request.FCGIBeginRequestBody;
 import com.wuyufeng.open.request.FCGIContentBody;
 import com.wuyufeng.open.request.FCGINameValueRequestBody;
 import com.wuyufeng.open.request.FCGIRequestBody;
-import com.wuyufeng.open.core.FCGIConstant;
-import com.wuyufeng.open.core.FCGIEngine;
-import com.wuyufeng.open.core.FCGIRequest;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -15,10 +15,14 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * FastCGI Client
- *
- * @author wuyunfeng
- * @date 16/5/20.
+ * ***********************************
+ * ***** FastCGI Client For Java *****
+ * ***********************************
+ * JavaFastCGIClient
+ * Author: wuyunfeng
+ * Date: 16/5/22
+ * Time: 下午2:59
+ * Email: wuyunfeng@126.com
  */
 public class FCGIClient {
 
@@ -31,7 +35,7 @@ public class FCGIClient {
             mClient.setKeepAlive(keepAlive);
             mClient.setSoTimeout(timeout);
         } catch (IOException e) {
-            System.out.println("create socket failure");
+            //nothing
         }
     }
 
@@ -39,7 +43,6 @@ public class FCGIClient {
 
         Random rand = new Random();
         int requestId = rand.nextInt(((1 << 16) - 1));
-        System.out.println("requestId = " + requestId);
         FCGIEngine fcgiEngine = FCGIEngine.newInstance(mClient);
 
         FCGIRequestBody beginRequestBody = new FCGIBeginRequestBody.Builder()
@@ -52,11 +55,8 @@ public class FCGIClient {
                 .requestId(requestId)
                 .content(beginRequestBody)
                 .build();
-        System.out.println("begin request");
         fcgiEngine.execute(request);
-        System.out.println("end begin request");
         Iterator it = params.entrySet().iterator();
-        System.out.println("begin params");
         while (it.hasNext()) {
             Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
             if (it.hasNext()) {
@@ -80,8 +80,6 @@ public class FCGIClient {
                 .content(null)
                 .build();
         fcgiEngine.execute(paramsRequest);
-        System.out.println("end params");
-        System.out.println("begin body");
 
         if (postBody != null && postBody.length() > 0) {
             FCGIContentBody bodyRequestBody = new FCGIContentBody(postBody.getBytes());
@@ -100,9 +98,6 @@ public class FCGIClient {
                 .content(null)
                 .build();
         fcgiEngine.execute(bodyRequest);
-        System.out.println("end body");
-        System.out.println("*********start***************");
         System.out.println(fcgiEngine.waitForResponse());
-        System.out.println("***********end*************");
     }
 }

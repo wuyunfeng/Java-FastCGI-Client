@@ -1,13 +1,16 @@
 package com.wuyufeng.open.core;
 
 /**
- * FastCGI Constant
- *
- * @author wuyunfeng
- * @date 16/5/20.
+ * ***********************************
+ * ***** FastCGI Client For Java *****
+ * ***********************************
+ * JavaFastCGIClient
+ * Author: wuyunfeng
+ * Date: 16/5/22
+ * Time: 下午3:00
+ * Email: wuyunfeng@126.com
  */
-public final class FCGIConstant {
-
+public class FCGIConstant {
     public static final int FCGI_VERSION = 1;
     public static final int FCGI_BEGIN_REQUEST = 1;
     public static final int FCGI_ABORT_REQUEST = 2;
@@ -29,5 +32,4 @@ public final class FCGIConstant {
     public static final int  FCGI_CANT_MPX_CONN        = 1;
     public static final int  FCGI_OVERLOADED           = 2;
     public static final int  FCGI_UNKNOWN_ROLE         = 3;
-
 }

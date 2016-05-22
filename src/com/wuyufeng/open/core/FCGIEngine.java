@@ -47,25 +47,19 @@ public class FCGIEngine {
             byte header[] = new byte[8];
             inputStream.read(header, 0, 8);
             FCGIResponseHeaderHandler responseHeader = new FCGIResponseHeaderHandler(header);
-            System.out.println(responseHeader.toString());
             byte contentData[] = new byte[responseHeader.contentLength];
-            System.out.println(Arrays.toString(header));
             inputStream.read(contentData, 0, responseHeader.contentLength);
             String contentStr = new String(contentData);
-            System.out.println("contentStr = " + contentStr);
+            System.out.println("response : \r\n" + contentStr);
             if (responseHeader.paddingLength > 0) {
                 inputStream.skip(responseHeader.paddingLength);
             }
             byte header1[] = new byte[8];
             inputStream.read(header1, 0, 8);
-            System.out.println(Arrays.toString(header1));
             FCGIResponseHeaderHandler responseHeader1 = new FCGIResponseHeaderHandler(header1);
-            System.out.println(responseHeader1.toString());
             byte contentData1[] = new byte[responseHeader1.contentLength];
             inputStream.read(contentData1, 0, responseHeader1.contentLength);
-            System.out.println(Arrays.toString(contentData1));
             FCGIEndResponse responseEnd = new FCGIEndResponse(contentData1);
-            System.out.println("responseEnd = " + responseEnd);
             if (responseHeader1.paddingLength > 0) {
                 inputStream.skip(responseHeader1.paddingLength);
             }
