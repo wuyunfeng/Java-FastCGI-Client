@@ -6,13 +6,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * FastCGI Protocols
- *
- * @author wuyunfeng
- * @date 16/5/20.
+ * ***********************************
+ * ***** FastCGI Client For Java *****
+ * ***********************************
+ * JavaFastCGIClient
+ * Author: wuyunfeng
+ * Date: 16/5/23
+ * Time: 上午11:23
+ * Email: wuyunfeng@126.com
  */
-public class FCGIProtocols {
-
+public class FCGIProtocolHelper {
     public static byte[] encodeFCGIPacket(int type, int requestId, String body) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         out.write(FCGIConstant.FCGI_VERSION);
@@ -56,7 +59,7 @@ public class FCGIProtocols {
 //        return out.toByteArray();
 //    }
 
-    public static Map<String, String > decodeNameValuePairs(byte[] data) {
+    public static Map<String, String> decodeNameValuePairs(byte[] data) {
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         int pack;
         Map<String, String> result = new HashMap<String, String>();
@@ -86,10 +89,10 @@ public class FCGIProtocols {
 
 
     private static int read128NameValue(ByteArrayInputStream in) {
-        int nameLen = (in.read() & 0x7F) << 24;
-        nameLen |= in.read() << 16;
-        nameLen |= in.read() << 8;
-        nameLen |= in.read();
+        int nameLen = ((in.read() & 0x7F) << 24) & 0xff000000;
+        nameLen |= (in.read() << 16) & 0x00ff0000;
+        nameLen |= (in.read() << 8) & 0x0000ff00;
+        nameLen |= in.read() & 0x000000ff;
         return nameLen;
     }
 

@@ -1,7 +1,5 @@
 package com.wuyufeng.open.response;
 
-import java.util.Arrays;
-
 /**
  * ***********************************
  * ***** FastCGI Client For Java *****

@@ -1,11 +1,11 @@
 package com.wuyufeng.open.core;
 
 import com.wuyufeng.open.response.FCGIEndResponse;
+import com.wuyufeng.open.response.FCGIResponse;
 import com.wuyufeng.open.response.FCGIResponseHeaderHandler;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Arrays;
 
 /**
  * ***********************************
@@ -41,53 +41,53 @@ public class FCGIEngine {
         request.writeTo(this.outputStream);
     }
 
-    public String waitForResponse() {
+    public FCGIResponse waitForResponse() {
+        FCGIResponse response = new FCGIResponse();
+        int nRead;
+        do {
+            try {
+                byte header[] = new byte[8];
+                nRead = inputStream.read(header, 0, 8);
+                FCGIResponseHeaderHandler headerHandler = new FCGIResponseHeaderHandler(header);
+                if (headerHandler.type == FCGIConstant.FCGI_STDOUT
+                        || headerHandler.type == FCGIConstant.FCGI_STDERR) {
+                    if (headerHandler.type == FCGIConstant.FCGI_STDERR) {
+                        response.setState(FCGIConstant.FCGI_REP_ERROR);
+                    }
+                    response.setState(FCGIConstant.FCGI_REP_OK);
+                    byte contentData[] = new byte[headerHandler.contentLength];
+                    int nReadContent = inputStream.read(contentData, 0, headerHandler.contentLength);
+                    if (nReadContent != headerHandler.contentLength) {
+                        // error happened
+                        response.setState(FCGIConstant.FCGI_REP_ERROR_CONTENT_LENGTH);
+                        break;
+                    }
+                    response.appendRespContent(contentData);
+                    if (headerHandler.paddingLength > 0) {
+                        inputStream.skip(headerHandler.paddingLength);
+                    }
+                }
+                if (headerHandler.type == FCGIConstant.FCGI_END_REQUEST) {
+                    byte endResponse[] = new byte[headerHandler.contentLength];
+                    FCGIEndResponse responseEnd = new FCGIEndResponse(endResponse);
+                    response.setEndResponse(responseEnd);
+                    break;
+                }
 
-        try {
-            byte header[] = new byte[8];
-            inputStream.read(header, 0, 8);
-            FCGIResponseHeaderHandler responseHeader = new FCGIResponseHeaderHandler(header);
-            byte contentData[] = new byte[responseHeader.contentLength];
-            inputStream.read(contentData, 0, responseHeader.contentLength);
-            String contentStr = new String(contentData);
-            System.out.println("response : \r\n" + contentStr);
-            if (responseHeader.paddingLength > 0) {
-                inputStream.skip(responseHeader.paddingLength);
+            } catch (IOException e) {
+                //nothing
+                response.setState(FCGIConstant.FCGI_REP_ERROR_IOEXCEPTION);
+                break;
             }
-            byte header1[] = new byte[8];
-            inputStream.read(header1, 0, 8);
-            FCGIResponseHeaderHandler responseHeader1 = new FCGIResponseHeaderHandler(header1);
-            byte contentData1[] = new byte[responseHeader1.contentLength];
-            inputStream.read(contentData1, 0, responseHeader1.contentLength);
-            FCGIEndResponse responseEnd = new FCGIEndResponse(contentData1);
-            if (responseHeader1.paddingLength > 0) {
-                inputStream.skip(responseHeader1.paddingLength);
-            }
 
-        } catch (IOException e) {
-            //nothing
-        }
-
-
-
+        } while (nRead == 8);
         try {
             inputStream.close();
             outputStream.close();
             mSocket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //nothing
         }
-        return " ";
+        return response;
     }
-
-    public static String decodeFCGIPacket(byte[] data) {
-        int version = data[0];
-        int type = data[1];
-        int requestID = (data[2] << 8) + data[3];
-        int contentLength = (data[4] << 8) + data[5];
-        int paddingLength = data[6];
-        int reserverd = data[7];
-        return "FASTCGI";
-    }
-
 }

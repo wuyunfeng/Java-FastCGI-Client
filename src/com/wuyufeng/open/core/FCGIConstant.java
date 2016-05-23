@@ -25,11 +25,16 @@ public class FCGIConstant {
     public static final int FCGI_UNKNOWN_TYPE = 11;
 
     public static final int FCGI_ROLE_RESPONSER = 1;
-    public static final int FCGI_ROLE_AUTHORIZER= 2;
-    public static final int FCGI_ROLE_FILTER= 3;
+    public static final int FCGI_ROLE_AUTHORIZER = 2;
+    public static final int FCGI_ROLE_FILTER = 3;
 
-    public static final int  FCGI_REQUEST_COMPLETE     = 0;
-    public static final int  FCGI_CANT_MPX_CONN        = 1;
-    public static final int  FCGI_OVERLOADED           = 2;
-    public static final int  FCGI_UNKNOWN_ROLE         = 3;
+    public static final int FCGI_REQUEST_COMPLETE = 0;
+    public static final int FCGI_CANT_MPX_CONN = 1;
+    public static final int FCGI_OVERLOADED = 2;
+    public static final int FCGI_UNKNOWN_ROLE = 3;
+
+    public static final int FCGI_REP_OK = 0;
+    public static final int FCGI_REP_ERROR = 1;
+    public static final int FCGI_REP_ERROR_CONTENT_LENGTH = 2;
+    public static final int FCGI_REP_ERROR_IOEXCEPTION = 3;
 }
