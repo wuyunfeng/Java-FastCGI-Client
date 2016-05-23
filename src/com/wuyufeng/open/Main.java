@@ -1,6 +1,7 @@
 package com.wuyufeng.open;
 
 import com.wuyufeng.open.client.FCGIClient;
+import com.wuyufeng.open.response.FCGIResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class Main {
         params.put("SERVER_PROTOCOL", "HTTP/1.1");
         params.put("CONTENT_TYPE", "application/x-www-form-urlencoded");
         params.put("CONTENT_LENGTH", content.length() + "");
-        client.request(params, content);
+        FCGIResponse response = client.request(params, content);
+        System.out.println(response);
     }
 }

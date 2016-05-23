@@ -7,6 +7,7 @@ import com.wuyufeng.open.request.FCGIBeginRequestBody;
 import com.wuyufeng.open.request.FCGIContentBody;
 import com.wuyufeng.open.request.FCGINameValueRequestBody;
 import com.wuyufeng.open.request.FCGIRequestBody;
+import com.wuyufeng.open.response.FCGIResponse;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -39,7 +40,7 @@ public class FCGIClient {
         }
     }
 
-    public void request(Map<String, String> params, String postBody) {
+    public FCGIResponse request(Map<String, String> params, String postBody) {
 
         Random rand = new Random();
         int requestId = rand.nextInt(((1 << 16) - 1));
@@ -98,6 +99,6 @@ public class FCGIClient {
                 .content(null)
                 .build();
         fcgiEngine.execute(bodyRequest);
-        System.out.println(fcgiEngine.waitForResponse());
+        return fcgiEngine.waitForResponse();
     }
 }
