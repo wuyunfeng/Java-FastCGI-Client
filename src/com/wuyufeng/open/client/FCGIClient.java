@@ -46,42 +46,40 @@ public class FCGIClient {
         int requestId = rand.nextInt(((1 << 16) - 1));
         FCGIEngine fcgiEngine = FCGIEngine.newInstance(mClient);
 
+        //begin request
         FCGIRequestBody beginRequestBody = new FCGIBeginRequestBody.Builder()
                 .role(FCGIConstant.FCGI_ROLE_RESPONSER)
                 .flag(0)
                 .build();
-        FCGIRequest request = new FCGIRequest.Builder()
+        FCGIRequest beginRequest = new FCGIRequest.Builder()
                 .version(FCGIConstant.FCGI_VERSION)
                 .type(FCGIConstant.FCGI_BEGIN_REQUEST)
                 .requestId(requestId)
                 .content(beginRequestBody)
                 .build();
-        fcgiEngine.execute(request);
-        Iterator it = params.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
-            if (it.hasNext()) {
-                FCGINameValueRequestBody paramsRequestBody = new FCGINameValueRequestBody.Builder()
-                        .addParam(entry.getKey(), entry.getValue())
-                        .build();
-                FCGIRequest paramsRequest = new FCGIRequest.Builder()
-                        .version(FCGIConstant.FCGI_VERSION)
-                        .type(FCGIConstant.FCGI_PARAMS)
-                        .requestId(requestId)
-                        .content(paramsRequestBody)
-                        .build();
-                fcgiEngine.execute(paramsRequest);
-            }
-        }
+        fcgiEngine.execute(beginRequest);
 
+        FCGINameValueRequestBody paramsRequestBody = new FCGINameValueRequestBody.Builder()
+                .addParams(params)
+                .build();
         FCGIRequest paramsRequest = new FCGIRequest.Builder()
+                .version(FCGIConstant.FCGI_VERSION)
+                .type(FCGIConstant.FCGI_PARAMS)
+                .requestId(requestId)
+                .content(paramsRequestBody)
+                .build();
+        fcgiEngine.execute(paramsRequest);
+
+        // params request
+        FCGIRequest endParamsRequest = new FCGIRequest.Builder()
                 .version(FCGIConstant.FCGI_VERSION)
                 .type(FCGIConstant.FCGI_PARAMS)
                 .requestId(requestId)
                 .content(null)
                 .build();
-        fcgiEngine.execute(paramsRequest);
+        fcgiEngine.execute(endParamsRequest);
 
+        //contentData request
         if (postBody != null && postBody.length() > 0) {
             FCGIContentBody bodyRequestBody = new FCGIContentBody(postBody.getBytes());
             FCGIRequest bodyRequest = new FCGIRequest.Builder()
@@ -92,13 +90,14 @@ public class FCGIClient {
                     .build();
             fcgiEngine.execute(bodyRequest);
         }
-        FCGIRequest bodyRequest = new FCGIRequest.Builder()
+        FCGIRequest endBodyRequest = new FCGIRequest.Builder()
                 .version(FCGIConstant.FCGI_VERSION)
                 .type(FCGIConstant.FCGI_STDIN)
                 .requestId(requestId)
                 .content(null)
                 .build();
-        fcgiEngine.execute(bodyRequest);
+        fcgiEngine.execute(endBodyRequest);
+
         return fcgiEngine.waitForResponse();
     }
 }

@@ -16,20 +16,20 @@ import java.util.Map;
  * Email: wuyunfeng@126.com
  */
 public class FCGIProtocolHelper {
-    public static byte[] encodeFCGIPacket(int type, int requestId, String body) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        out.write(FCGIConstant.FCGI_VERSION);
-        out.write(type);
-        out.write(requestId >> 8);
-        out.write(requestId);
-        int length = body.length();
-        out.write(length >> 8);
-        out.write(length);
-        out.write(0);
-        out.write(0);
-        out.write(body.getBytes(), 0, body.length());
-        return out.toByteArray();
-    }
+//    public static byte[] encodeFCGIPacket(int type, int requestId, String body) {
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        out.write(FCGIConstant.FCGI_VERSION);
+//        out.write(type);
+//        out.write(requestId >> 8);
+//        out.write(requestId);
+//        int length = body.length();
+//        out.write(length >> 8);
+//        out.write(length);
+//        out.write(0);
+//        out.write(0);
+//        out.write(body.getBytes(), 0, body.length());
+//        return out.toByteArray();
+//    }
 
 //    public static String decodeFCGIPacket(byte[] data) {
 //        ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -59,42 +59,42 @@ public class FCGIProtocolHelper {
 //        return out.toByteArray();
 //    }
 
-    public static Map<String, String> decodeNameValuePairs(byte[] data) {
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        int pack;
-        Map<String, String> result = new HashMap<String, String>();
-        while ((pack = in.read()) != -1) {
-            int nameLen = pack;
-            if (nameLen > 128) {
-                nameLen = read128NameValue(in);
-            }
-            int valLen = in.read();
-            if (valLen > 128) {
-                valLen = read128NameValue(in);
-            }
-            StringBuilder nameBuilder = new StringBuilder();
-            while (nameLen > 0) {
-                nameBuilder.append(in.read());
-                nameLen--;
-            }
-            StringBuilder valueBuilder = new StringBuilder();
-            while (valLen > 0) {
-                valueBuilder.append(in.read());
-                valLen--;
-            }
-            result.put(nameBuilder.toString(), valueBuilder.toString());
-        }
-        return result;
-    }
+//    public static Map<String, String> decodeNameValuePairs(byte[] data) {
+//        ByteArrayInputStream in = new ByteArrayInputStream(data);
+//        int pack;
+//        Map<String, String> result = new HashMap<String, String>();
+//        while ((pack = in.read()) != -1) {
+//            int nameLen = pack;
+//            if (nameLen > 128) {
+//                nameLen = read128NameValue(in);
+//            }
+//            int valLen = in.read();
+//            if (valLen > 128) {
+//                valLen = read128NameValue(in);
+//            }
+//            StringBuilder nameBuilder = new StringBuilder();
+//            while (nameLen > 0) {
+//                nameBuilder.append(in.read());
+//                nameLen--;
+//            }
+//            StringBuilder valueBuilder = new StringBuilder();
+//            while (valLen > 0) {
+//                valueBuilder.append(in.read());
+//                valLen--;
+//            }
+//            result.put(nameBuilder.toString(), valueBuilder.toString());
+//        }
+//        return result;
+//    }
 
 
-    private static int read128NameValue(ByteArrayInputStream in) {
-        int nameLen = ((in.read() & 0x7F) << 24) & 0xff000000;
-        nameLen |= (in.read() << 16) & 0x00ff0000;
-        nameLen |= (in.read() << 8) & 0x0000ff00;
-        nameLen |= in.read() & 0x000000ff;
-        return nameLen;
-    }
+//    private static int read128NameValue(ByteArrayInputStream in) {
+//        int nameLen = ((in.read() & 0x7F) << 24) & 0xff000000;
+//        nameLen |= (in.read() << 16) & 0x00ff0000;
+//        nameLen |= (in.read() << 8) & 0x0000ff00;
+//        nameLen |= in.read() & 0x000000ff;
+//        return nameLen;
+//    }
 
 //    private static void writeNameValue(ByteArrayOutputStream out, String value) {
 //        int valueLength = value.length();
